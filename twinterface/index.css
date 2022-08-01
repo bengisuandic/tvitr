@@ -1,0 +1,42 @@
+body {
+  margin: 0;
+  padding: 0;
+}
+
+body{
+    margin: 0px;
+    background-color: rgb(211, 211, 255);
+}
+
+.top-navigation{
+    background-color: rgb(86, 173, 170);
+    overflow: hidden;
+    gap: 10px;
+    margin: 0;
+    padding-left: 2%;
+    color: aliceblue;
+}
+
+.page-content{
+    margin-top: 30px;
+    padding: 0 2%;
+}
+
+.card {
+  display: flex;
+  padding: 0 10px;
+  flex-direction: column;
+  width: clamp(20rem, calc(20rem + 2vw), 22rem);
+  overflow: hidden;
+  box-shadow: 0 0.1rem 1rem rgba(0, 0, 0, 0.1);
+  border-radius: 1em;
+  background: #ece9e6;
+  background: linear-gradient(to right, #ffffff, #ece9e6);
+}
+
+.card__body {
+  padding: 1rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}

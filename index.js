@@ -1,30 +1,22 @@
 
 //const like = require("./models/Like")
-const tweet = require("./models/Tweet")
-const user = require("./models/User")
+const Tweet = require("./models/Tweet")
+const User = require("./models/User")
 const UserDatabase = require("./data/userDB")
 const TweetDatabase = require("./data/TwitDB")
 
 
-const burak = user.create({name:"burak",age:"44",tweets:[]})
-const tweet1= tweet.create({data:"asasdsa"},burak)
-TweetDatabase.save([tweet1])
-
-const bengi = user.create({name:"bengi", age:"20"})
+const burak = new User("burak","44")
+const bengi = new User("bengi", "20")
+const tweet1= new Tweet("asasdsa",burak)//aşağıkiyle aynı bunlar her türlü olur sorun yok
+const tweet2 = Tweet.create({data: "myTwt 1"})
+bengi.atTwt(tweet2)
 burak.atTwt(tweet1);
-console.log("before json: ",burak.tweets);
-// const tweet2 = tweet.create({data: "myTwt 1"})
-UserDatabase.save([burak,bengi])
-// UserDatabase.save([bengi])
-const userq= UserDatabase.read()
+TweetDatabase.save([tweet1,tweet2])
+UserDatabase.save([burak])
+UserDatabase.insert([bengi])
+const users= UserDatabase.read()
+const allTweets = TweetDatabase.read()
 
-console.log(userq[1])
-
-// // bengi.atTwt(tweet2);
-// // const userDatabase = new UserDatabase("users");
-
-// // userDatabase.save(burak);
-// // userDatabase.save(bengi);
-
-// const users = userDatabase.read("users")
-// console.log(users)
+console.log(users,allTweets)
+console.log(users[0].tweets)

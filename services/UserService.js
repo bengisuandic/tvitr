@@ -6,7 +6,7 @@ let id= "62ea6bd11650b12aa0ef43d1"
 //let tweetId = "62ea766c3eafffbb27f22afa"
 class UserService extends BaseService{
    model=UserModel
-    
+
    async tweetAt(data){
      const tweet= await TweetService.add({data:data, user:id})
      const userTweet = await this.find(id)
@@ -28,6 +28,20 @@ class UserService extends BaseService{
       return newLike
    }
 
+   async deleteTweet(tweetId){
+      //const tweetDel = await TweetService.find(tweetId)
+      const myUser = await this.find(id)
+      const delIndex = myUser.tweets.findIndex(el => el == tweetId)
+      if (delIndex !== -1) {
+         myUser.tweets.splice(delIndex, 1)
+         console.log(`tweet deleted. New tweet list: ${myUser.tweets}`)
+         myUser.save()
+         return myUser
+      } else {
+         console.log("Tweet not found in user's list. How did u even send request???")
+         return "bruh"
+      }
+   }
 
 };
 

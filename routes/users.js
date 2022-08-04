@@ -1,4 +1,5 @@
 const express = require('express')
+const TweetService = require('../services/TweetService')
 const router = express.Router()
 const UserService = require('../services/UserService')
 
@@ -8,10 +9,17 @@ router.get('/all', async (req, res) => {
     res.send(people)
 })
 
-router.post('/',async (req,res)=>{
+router.post('/',async (req, res) => {
     const newUser = await UserService.add(req.body)
     res.status(200).send(newUser)
 })
+
+router.get('/del/:tweetId', async (req, res) => {
+    const {tweetId} = req.params
+    UserService.deleteTweet(tweetId)
+    const tweets = await TweetService.del(tweetId)
+    res.send(tweets)
+  })
 
 router.post('/likeTweet/:tweetId', async(req, res) => {
     try {

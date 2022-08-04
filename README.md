@@ -1,2 +1,2 @@
 # tvitr
-An introduction to backend. Local database used
+An introduction to fullstack development

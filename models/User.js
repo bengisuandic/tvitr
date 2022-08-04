@@ -1,30 +1,26 @@
 
-class User {
-    constructor(name,age,tweets=[]) {
-        this.name = name;
-        this.age = age;
-        this.tweets = tweets;
-    }
-    
-    atTwt(tweet){
-       this.tweets.push(tweet)
-       //Burada TweetDatabase dahil edilip atılan tiwitler oraya kayıt edilebilir.
-       //sana ödev yap bunu :D
-    }
-    
-    likeAtwt(tweet){
-        let pushLike = new Like(this, tweet)
-        tweet.likes.push(pushLike)
-    }
+const mongoose = require('mongoose');
 
-    static create({name,age,tweets}){
-        return new User(name,age,tweets)
-        /**
-         * const user = new User({name,age})
-         * user.tweets=tweets
-         * 
-         * aynı bunlar
-         */
-    }
-}
-module.exports= User
+
+const userSchema = new mongoose.Schema ({
+ 
+    name: {
+        type: String,
+        required: [true, 'A user must have a name']
+    },
+    age: {
+        type: Number,
+        required: [true, 'A user must have an age']
+    },
+    tweets: [{
+        type: mongoose.SchemaTypes.ObjectId,
+            ref: 'Tweet',
+            
+    }]
+
+});
+
+
+const User = mongoose.model("User", userSchema);
+
+module.exports = User;

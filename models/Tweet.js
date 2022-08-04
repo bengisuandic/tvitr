@@ -11,12 +11,11 @@ const tweetSchema = new mongoose.Schema ({
         ref: 'User',
         autopopulate: true
     },
-    likes: [{
-        type: mongoose.SchemaTypes.ObjectId,
-            ref: 'Like',
-
-            
-    }]
+    likes: [
+        
+        {type: mongoose.SchemaTypes.ObjectId,
+            ref: 'Like'}
+    ]
 });
 
 tweetSchema.plugin(require('mongoose-autopopulate'))

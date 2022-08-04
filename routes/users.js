@@ -13,14 +13,13 @@ router.post('/',async (req,res)=>{
     res.status(200).send(newUser)
 })
 
-router.post('/likeTweet', async(req, res) => {
+router.post('/likeTweet/:tweetId', async(req, res) => {
     try {
         console.log("hello res")
-        const tweetId = req.body.tweetId
-        console.log(tweetId)
-        const myTweet = await TweetService.find(tweetId)
-        const liked = await UserService.likeTweet(myTweet)
-        res.status(200).send(liked)
+        const {tweetId} = req.params
+        // console.log(tweetId)
+        const response = await UserService.likeTweet(tweetId)
+        res.status(200).send(response)
 
     } catch (err) {
         res.status(404).json({

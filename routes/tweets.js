@@ -10,9 +10,19 @@ router.get('/all', async (req, res) => {
 })
 
 router.get('/:tweetId', async(req, res) => {
-    const {tweetId} = req.params
-    const myTweet = await TweetService.find(tweetId)
-    res.send.apply(myTweet);
+    try {
+        console.log("hello????")
+        const {tweetId} = req.params
+        console.log(tweetId)
+        const myTweet = await TweetService.find(tweetId)
+        res.send(myTweet);
+
+    }catch(err){
+        res.status(404).json({
+            status: 'Fail',
+            message: err.message,
+          });
+    }
 })
 
 router.post('/tweetAt',async (req, res)=>{

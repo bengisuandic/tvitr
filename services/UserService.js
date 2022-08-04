@@ -15,13 +15,19 @@ class UserService extends BaseService{
      return tweet
    }
 
-   async likeTweet(tweet){
-      const userLike = await this.find(id)
-      const newLike = await LikeService.add({tweet: tweet, user: userLike})
-      tweet.likes.push(newLike)
-      tweet.save() 
+   async likeTweet(tweetId){
+      const newLike = await TweetService.find(tweetId)
+      const myIndex = newLike.likes.findIndex(el => el == id)
+      if (myIndex !== -1) {
+         newLike.likes.splice(myIndex, 1)
+         console.log("unliked")
+      }else{
+         newLike.likes.push(id)
+         console.log("liked")}
+      newLike.save()
       return newLike
    }
+
 
 };
 

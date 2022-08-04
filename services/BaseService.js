@@ -73,9 +73,9 @@ module.exports=class BaseService{
       async find(itemId) {
         return this.model.findById(itemId)
       }
-      async findByUserName(username) {
-        return this.model.findOne({userName:username})
-      }
+    //   async findByUserName(username) {
+    //     return this.model.findOne({userName:username})
+    //   }
       
       async query(object){
         return this.model.find(object)

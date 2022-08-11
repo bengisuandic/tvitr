@@ -2,8 +2,8 @@ const BaseService = require("./BaseService");
 const UserModel = require("../models/User");
 const TweetService = require("./TweetService");
 const LikeService = require("./LikeService");
-let id = "62ea6bd11650b12aa0ef43d1";
-//let tweetId = "62ea766c3eafffbb27f22afa"
+let id = "62eb67e72243ec803a341a67";
+
 class UserService extends BaseService {
   model = UserModel;
 
@@ -11,6 +11,7 @@ class UserService extends BaseService {
     const tweet = await TweetService.add({ data: data, user: id });
     const userTweet = await this.find(id);
     userTweet.tweets.push(tweet);
+    userTweet.tweetCount += 1;
     userTweet.save();
     return tweet;
   }
@@ -30,19 +31,22 @@ class UserService extends BaseService {
   }
 
   async deleteTweet(tweetId) {
-    //const tweetDel = await TweetService.find(tweetId)
     const myUser = await this.find(id);
-    const delIndex = myUser.tweets.findIndex((el) => el == tweetId);
+    //console.log("found user:", myUser);
+    const delIndex = myUser.tweets.findIndex((el) => el._id == tweetId);
+    //console.log("delIndex:", delIndex);
     if (delIndex !== -1) {
       myUser.tweets.splice(delIndex, 1);
-      console.log(`tweet deleted. New tweet list: ${myUser.tweets}`);
+      //console.log(`tweet deleted. New tweet list: ${myUser.tweets}`);
+      myUser.tweetCount -= 1;
+      //console.log("my user in delete", myUser)
       myUser.save();
-      return myUser;
+      return myUser.tweets;
     } else {
-      console.log(
-        "Tweet not found in user's list. How did u even send request???"
-      );
-      return "fail";
+      // console.log(
+      //   "Tweet not found in user's list. How did u even send request???"
+      // );
+      return "Fail. Tweet not found in user's list";
     }
   }
 }

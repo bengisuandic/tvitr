@@ -13,12 +13,27 @@ router.post("/", async (req, res) => {
   res.status(200).send(newUser);
 });
 
-router.get("/del/:tweetId", async (req, res) => {
-  const { tweetId } = req.params;
-  UserService.deleteTweet(tweetId);
+
+router.get("/:userId", async (req, res) => {
   try {
-    const tweets = await TweetService.del(tweetId);
-    res.send(tweets);
+    const { userId } = req.params;
+    console.log(userId);
+    const myUser = await UserService.find(userId);
+    res.send(myUser);
+  } catch (err) {
+    res.status(404).json({
+      status: "Fail",
+      message: err.message,
+    });
+  }
+});
+
+router.get("/del/:tweetId", async (req, res) => {
+  try {
+    const { tweetId } = req.params;
+    const tweets = await UserService.deleteTweet(tweetId);
+    TweetService.del(tweetId);
+    res.status(200).send(tweets);
   } catch (err) {
     res.status(404).json({
       status: "Fail",

@@ -24,9 +24,16 @@ router.get("/:tweetId", async (req, res) => {
 });
 
 router.post("/tweetAt", async (req, res) => {
-  const { data } = req.body;
-  const newTweet = await UserService.tweetAt(data);
-  res.status(200).send(newTweet);
+  try {
+    const { data } = req.body;
+    const newTweet = await UserService.tweetAt(data);
+    res.status(200).send(newTweet);
+  }catch (err) {
+    res.status(404).json({
+      status: "Fail", 
+      message: err.message,
+    });
+  }
 });
 
 module.exports = router;

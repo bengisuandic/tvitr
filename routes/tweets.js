@@ -4,14 +4,15 @@ const TweetService = require("../services/TweetService");
 const UserService = require("../services/UserService");
 const auth = require("../middlewares/auth");
 
+
 //Get all tweets (prob should be an admin thing)
 router.get("/all", auth, async (req, res) => {
   const allTweets = await TweetService.writeAllTweets();
   res.send(allTweets);
 });
 
-//Get single tweet with id
-router.get("/:tweetId", async (req, res) => {
+//Get single tweet with tweet id
+router.get("/singleTweet/:tweetId", async (req, res) => {
   try {
     const { tweetId } = req.params;
     console.log(tweetId);
@@ -22,6 +23,16 @@ router.get("/:tweetId", async (req, res) => {
       status: "Fail",
       message: err.message,
     });
+  }
+});
+
+//Get a user's tweets
+router.get("/userTweets/:userId",  async (req, res) => {
+  try {
+    const tweets = await TweetService.query({user: req.params.userId});
+    res.send(tweets);
+  } catch (error) {
+    res.send("Find profile tweets failed")
   }
 });
 
@@ -59,8 +70,7 @@ router.post("/likeTweet/:tweetId", auth, async (req, res) => {
   try {
     console.log("hello res");
     const { tweetId } = req.params;
-    // console.log(tweetId)
-    const response = await UserService.likeTweet(tweetId);
+    const response = await UserService.likeTweet(tweetId, req.user._id);
     res.status(200).send(response);
   } catch (err) {
     res.status(404).json({

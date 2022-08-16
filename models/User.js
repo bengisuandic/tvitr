@@ -1,9 +1,19 @@
+//I am removing "user.tweets" since it is unnecessary and brings me trouble ty
 
 const mongoose = require('mongoose');
 
-
 const userSchema = new mongoose.Schema ({
- 
+    
+    username: {
+        type: String,
+        required: true
+    },
+
+    password: {
+        type: String,
+        required: true,
+    },
+
     name: {
         type: String,
         required: [true, 'A user must have a name']
@@ -12,11 +22,6 @@ const userSchema = new mongoose.Schema ({
         type: Number,
         required: [true, 'A user must have an age']
     },
-    tweets: [{
-        type: mongoose.SchemaTypes.ObjectId,
-        ref: 'Tweet',
-        autopopulate: true
-    }],
 
     tweetCount: {
         type: Number,
@@ -24,7 +29,6 @@ const userSchema = new mongoose.Schema ({
     }
 });
 
-userSchema.plugin(require('mongoose-autopopulate'))
 const User = mongoose.model("User", userSchema);
 
 module.exports = User;

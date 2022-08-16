@@ -1,19 +1,64 @@
+require('dotenv').config();
+
 const express = require("express");
-const TweetService = require("../services/TweetService");
 const router = express.Router();
+
+const TweetService = require("../services/TweetService");
 const UserService = require("../services/UserService");
 
+const jwt = require("jsonwebtoken");
+const bcrypt = require("bcryptjs");
+
+const auth = require("../middlewares/auth");
+
+//Get all users (maybe an admin thing?)
 router.get("/all", async (req, res) => {
   const people = await UserService.findAll();
   res.send(people);
 });
 
-router.post("/", async (req, res) => {
-  const newUser = await UserService.add(req.body);
-  res.status(200).send(newUser);
+
+
+//Create user (hashing password for security)
+router.post("/signIn", async (req, res) => {
+  try {
+    const hashedPassword = await bcrypt.hash(req.body.password, 10);
+    const newBody = req.body;
+    newBody.password = hashedPassword;
+    const newUser = await UserService.add(newBody);
+    res.status(200).send(newUser);
+  } catch (error) {
+    console.log("Something went wrong adding the user");
+    res.status(500);
+  }
 });
 
 
+//Login, create and send token
+router.post("/login", async (req, res) => {
+  const userQ = await UserService.query({username: req.body.username});
+  const user = userQ[0];
+  if(user == null){
+    return res.status(400).send('Cannot find user');
+  }
+  try {
+    if(await bcrypt.compare(req.body.password, user.password)){
+      console.log("hm?")
+      
+      const accessToken = jwt.sign({_id: user._id}, process.env.ACCESS_TOKEN_SECRET, {expiresIn: '20m'})
+      const refreshToken = jwt.sign({_id: user._id}, process.env.REFRESH_TOKEN_SECRET)
+
+      const sendThis = {user: user, token: accessToken, reToken: refreshToken};
+      res.send(sendThis);
+    } else{
+      res.send("Wrong password")
+    }
+  } catch (error) {
+    res.status(500).send("Something went wrong");
+  }
+});
+
+//Get a single user by id
 router.get("/:userId", async (req, res) => {
   try {
     const { userId } = req.params;
@@ -28,33 +73,8 @@ router.get("/:userId", async (req, res) => {
   }
 });
 
-router.get("/del/:tweetId", async (req, res) => {
-  try {
-    const { tweetId } = req.params;
-    const tweets = await UserService.deleteTweet(tweetId);
-    TweetService.del(tweetId);
-    res.status(200).send(tweets);
-  } catch (err) {
-    res.status(404).json({
-      status: "Fail",
-      message: err,
-    });
-  }
-});
 
-router.post("/likeTweet/:tweetId", async (req, res) => {
-  try {
-    console.log("hello res");
-    const { tweetId } = req.params;
-    // console.log(tweetId)
-    const response = await UserService.likeTweet(tweetId);
-    res.status(200).send(response);
-  } catch (err) {
-    res.status(404).json({
-      status: "Fail",
-      message: err,
-    });
-  }
-});
+
+
 
 module.exports = router;

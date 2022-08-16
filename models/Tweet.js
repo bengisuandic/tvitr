@@ -1,21 +1,21 @@
-const {parse, stringify, toJSON, fromJSON} = require('flatted');
+const mongoose = require("mongoose");
 
-class Tweet {
-    constructor(data, user) {
-        this.likes=[]
-        this.data=data
-        this.user = user
-    } 
-    
-    static create({data},user){
-        return new Tweet(data,user)
-    }
+const tweetSchema = new mongoose.Schema({
+  data: {
+    type: String,
+    // required: [true, 'A tweet must have content']
+  },
+  user: {
+    type: mongoose.SchemaTypes.ObjectId,
+    ref: "User",
+    // autopopulate: true
+    // strictPopulate:false
+  },
+  likes: [{ type: mongoose.SchemaTypes.ObjectId, ref: "Like" }],
+});
 
-    // toJSON() {
-    //     return Flatted.stringify(this);
+//tweetSchema.plugin(require('mongoose-autopopulate'))
 
-    // }
-}
+const TweetModel = mongoose.model("Tweet", tweetSchema);
 
-
-module.exports=Tweet
+module.exports = TweetModel;

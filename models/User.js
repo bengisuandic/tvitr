@@ -1,22 +1,34 @@
+//I am removing "user.tweets" since it is unnecessary and brings me trouble ty
 
-class User {
-    constructor(name,age,tweets=[]) {
-        this.name = name;
-        this.age = age;
-        this.tweets = [];
-    }
-    
-    atTwt(tweet){
-       this.tweets.push(tweet)
-    }
-    
-    likeAtwt(tweet){
-        let pushLike = new Like(this, tweet)
-        tweet.likes.push(pushLike)
-    }
+const mongoose = require('mongoose');
 
-    static create({name,age,tweets}){
-        return new User(name,age,tweets)
+const userSchema = new mongoose.Schema ({
+    
+    username: {
+        type: String,
+        required: true
+    },
+
+    password: {
+        type: String,
+        required: true,
+    },
+
+    name: {
+        type: String,
+        required: [true, 'A user must have a name']
+    },
+    age: {
+        type: Number,
+        required: [true, 'A user must have an age']
+    },
+
+    tweetCount: {
+        type: Number,
+        default: 0
     }
-}
-module.exports= User
+});
+
+const User = mongoose.model("User", userSchema);
+
+module.exports = User;

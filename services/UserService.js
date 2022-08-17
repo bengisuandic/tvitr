@@ -29,18 +29,15 @@ class UserService extends BaseService {
     return newLike;
   }
 
-  async deleteTweet(tweetId, userId) {
-    const myUser = await this.find(userId);
-    const delIndex = myUser.tweets.findIndex((el) => el._id == tweetId);
-    if (delIndex !== -1) {
+  async deleteTweet(userId, tweetId) {
+    try {
+      const myUser = await this.find(userId);
       myUser.tweetCount -= 1;
       myUser.save();
-      return myUser
-    } else {
-       console.log(
-         "Tweet not found in user's list. How did u even send request???"
-       );
-      return "Fail. Tweet not found in user's list";
+      TweetService.del(tweetId);
+      return await TweetService.query({user: myUser._id});
+    } catch (error) {
+      return error
     }
   }
   

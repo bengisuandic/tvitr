@@ -14,7 +14,7 @@ router.get("/all", async (req, res) => {
 });
 
 //Create user (hashing password for security)
-router.post("/signIn", async (req, res) => {
+router.post("/signup", async (req, res) => {
   try {
     const hashedPassword = await bcrypt.hash(req.body.password, 10);
     const newBody = req.body;
@@ -29,12 +29,12 @@ router.post("/signIn", async (req, res) => {
 
 //Login, create and send token
 router.post("/login", async (req, res) => {
-  const userQ = await UserService.query({username: req.body.username});
-  const user = userQ[0];
-  if(user == null){
-    return res.status(400).send('Cannot find user');
-  }
   try {
+    const userQ = await UserService.query({username: req.body.username});
+    const user = userQ[0];
+    if(user == null){
+      return res.send('Cannot find user');
+    }
     if(await bcrypt.compare(req.body.password, user.password)){
       const accessToken = jwt.sign({_id: user._id}, process.env.ACCESS_TOKEN_SECRET, {expiresIn: '20h'})
       const refreshToken = jwt.sign({_id: user._id}, process.env.REFRESH_TOKEN_SECRET)

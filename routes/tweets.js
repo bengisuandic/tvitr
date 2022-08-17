@@ -6,7 +6,7 @@ const auth = require("../middlewares/auth");
 
 
 //Get all tweets (prob should be an admin thing)
-router.get("/all", auth, async (req, res) => {
+router.get("/all", async (req, res) => {
   const allTweets = await TweetService.writeAllTweets();
   res.send(allTweets);
 });
@@ -54,8 +54,9 @@ router.post("/tweetAt", auth, async (req, res) => {
 router.get("/del/:tweetId", auth, async (req, res) => {
   try {
     const { tweetId } = req.params;
-    const tweets = await UserService.deleteTweet(tweetId);
-    TweetService.del(tweetId);
+    console.log("TWEETID:", tweetId, "usr:", req.user._id)
+    const tweets = await UserService.deleteTweet(req.user._id, tweetId);
+
     res.status(200).send(tweets);
   } catch (err) {
     res.status(404).json({

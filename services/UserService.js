@@ -7,7 +7,7 @@ class UserService extends BaseService {
   model = UserModel;
 
   async tweetAt(data, userId) {
-    console.log(userId)
+    // console.log(userId)
     const userTweet = await this.find(userId);
     const tweet = await TweetService.add({ data: data, user: userTweet });
     userTweet.tweetCount += 1;
@@ -34,8 +34,9 @@ class UserService extends BaseService {
       const myUser = await this.find(userId);
       myUser.tweetCount -= 1;
       myUser.save();
-      TweetService.del(tweetId);
-      return await TweetService.query({user: myUser._id});
+      return "success";
+      // TweetService.del(tweetId);
+      // return await TweetService.query({user: myUser._id});
     } catch (error) {
       return error
     }

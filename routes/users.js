@@ -53,7 +53,6 @@ router.post("/login", async (req, res) => {
 router.get("/singleUser/:userId", async (req, res) => {
   try {
     const { userId } = req.params;
-    console.log(userId);
     const myUser = await UserService.find(userId);
     res.send(myUser);
   } catch (err) {

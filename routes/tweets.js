@@ -15,7 +15,7 @@ router.get("/all", async (req, res) => {
 router.get("/singleTweet/:tweetId", async (req, res) => {
   try {
     const { tweetId } = req.params;
-    console.log(tweetId);
+    //console.log(tweetId);
     const myTweet = await TweetService.find(tweetId);
     res.send(myTweet);
   } catch (err) {
@@ -32,7 +32,7 @@ router.get("/userTweets/:userId",  async (req, res) => {
     const tweets = await TweetService.query({user: req.params.userId});
     res.send(tweets);
   } catch (error) {
-    res.send("Find profile tweets failed")
+    res.status(400).send("Find profile tweets failed")
   }
 });
 
@@ -55,8 +55,10 @@ router.get("/del/:tweetId", auth, async (req, res) => {
   try {
     const { tweetId } = req.params;
     console.log("TWEETID:", tweetId, "usr:", req.user._id)
-    const tweets = await UserService.deleteTweet(req.user._id, tweetId);
-
+    const resp = await UserService.deleteTweet(req.user._id, tweetId);
+    const resp1 = await TweetService.del(tweetId);
+    const tweets = await TweetService.query({user: req.user._id});
+    console.log(tweets);
     res.status(200).send(tweets);
   } catch (err) {
     res.status(404).json({
@@ -69,7 +71,6 @@ router.get("/del/:tweetId", auth, async (req, res) => {
 //Like a tweet with token (maybe a user shouldnt be able to like their own tweet?)
 router.post("/likeTweet/:tweetId", auth, async (req, res) => {
   try {
-    console.log("hello res");
     const { tweetId } = req.params;
     const response = await UserService.likeTweet(tweetId, req.user._id);
     res.status(200).send(response);

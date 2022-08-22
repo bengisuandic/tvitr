@@ -5,7 +5,7 @@ class TweetService extends BaseService{
     model = TweetModel;
 
     async writeAllTweets(){
-        return await TweetModel.find().populate('user', ["_id username name"])
+        return await TweetModel.find().populate('user', "_id username name _img")
     }
 };
 

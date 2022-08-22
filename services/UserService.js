@@ -7,7 +7,7 @@ class UserService extends BaseService {
   model = UserModel;
 
   async tweetAt(data, userId) {
-    console.log(userId)
+    // console.log(userId)
     const userTweet = await this.find(userId);
     const tweet = await TweetService.add({ data: data, user: userTweet });
     userTweet.tweetCount += 1;
@@ -29,18 +29,16 @@ class UserService extends BaseService {
     return newLike;
   }
 
-  async deleteTweet(tweetId, userId) {
-    const myUser = await this.find(userId);
-    const delIndex = myUser.tweets.findIndex((el) => el._id == tweetId);
-    if (delIndex !== -1) {
+  async deleteTweet(userId, tweetId) {
+    try {
+      const myUser = await this.find(userId);
       myUser.tweetCount -= 1;
       myUser.save();
-      return myUser
-    } else {
-       console.log(
-         "Tweet not found in user's list. How did u even send request???"
-       );
-      return "Fail. Tweet not found in user's list";
+      return "success";
+      // TweetService.del(tweetId);
+      // return await TweetService.query({user: myUser._id});
+    } catch (error) {
+      return error
     }
   }
   

@@ -4,17 +4,18 @@ const TweetService = require("../services/TweetService");
 const UserService = require("../services/UserService");
 const auth = require("../middlewares/auth");
 
+
 //Get all tweets (prob should be an admin thing)
-router.get("/all", auth, async (req, res) => {
+router.get("/all", async (req, res) => {
   const allTweets = await TweetService.writeAllTweets();
   res.send(allTweets);
 });
 
-//Get single tweet with id
-router.get("/:tweetId", async (req, res) => {
+//Get single tweet with tweet id
+router.get("/singleTweet/:tweetId", async (req, res) => {
   try {
     const { tweetId } = req.params;
-    console.log(tweetId);
+    //console.log(tweetId);
     const myTweet = await TweetService.find(tweetId);
     res.send(myTweet);
   } catch (err) {
@@ -22,6 +23,16 @@ router.get("/:tweetId", async (req, res) => {
       status: "Fail",
       message: err.message,
     });
+  }
+});
+
+//Get a user's tweets
+router.get("/userTweets/:userId",  async (req, res) => {
+  try {
+    const tweets = await TweetService.query({user: req.params.userId});
+    res.send(tweets);
+  } catch (error) {
+    res.status(400).send("Find profile tweets failed")
   }
 });
 
@@ -43,8 +54,11 @@ router.post("/tweetAt", auth, async (req, res) => {
 router.get("/del/:tweetId", auth, async (req, res) => {
   try {
     const { tweetId } = req.params;
-    const tweets = await UserService.deleteTweet(tweetId);
-    TweetService.del(tweetId);
+    console.log("TWEETID:", tweetId, "usr:", req.user._id)
+    const resp = await UserService.deleteTweet(req.user._id, tweetId);
+    const resp1 = await TweetService.del(tweetId);
+    const tweets = await TweetService.query({user: req.user._id});
+    console.log(tweets);
     res.status(200).send(tweets);
   } catch (err) {
     res.status(404).json({
@@ -57,10 +71,8 @@ router.get("/del/:tweetId", auth, async (req, res) => {
 //Like a tweet with token (maybe a user shouldnt be able to like their own tweet?)
 router.post("/likeTweet/:tweetId", auth, async (req, res) => {
   try {
-    console.log("hello res");
     const { tweetId } = req.params;
-    // console.log(tweetId)
-    const response = await UserService.likeTweet(tweetId);
+    const response = await UserService.likeTweet(tweetId, req.user._id);
     res.status(200).send(response);
   } catch (err) {
     res.status(404).json({

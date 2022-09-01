@@ -1,15 +1,3 @@
-// class Like {
-//     constructor(user, tweet) {
-//         this.user=user
-//         this.tweet=tweet
-//     }
-//     static create({user,tweet}){
-//         return new Like(user,tweet)
-//     }
-// }
-
-// module.exports=Like
-
 const mongoose =  require('mongoose');
 
 const likeSchema = new mongoose.Schema ({

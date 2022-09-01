@@ -44,7 +44,7 @@ router.post("/tweetAt", auth, async (req, res) => {
     res.status(200).send(newTweet);
   }catch (err) {
     res.status(404).json({
-      status: "Fail", 
+      status: "Failed to send tweet", 
       message: err.message,
     });
   }
